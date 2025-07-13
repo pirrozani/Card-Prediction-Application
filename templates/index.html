@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Image Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<h1>Card Image Prediction</h1>
+
+<div class="container">
+    <div class="description">
+        <p>Upload a playing card image and select a model to predict the card type.</p>
+    </div>
+
+    <form id="predictionForm" enctype="multipart/form-data">
+        <div class="form-group">
+            <div class="section">
+                <h4>Select Labels</h4>
+                <div>
+                    <input type="radio" id="label_14" name="classes" value="14" checked>
+                    <label for="label_14">14 labels</label>
+                </div>
+                <div>
+                    <input type="radio" id="label_53" name="classes" value="53">
+                    <label for="label_53">53 labels</label>
+                </div>
+            </div>
+            <div class="section">
+                <h4>
+                    <label for="modelSelect">Select Model:</label>
+                </h4>
+                <select id="modelSelect" name="model" required>
+                    {% for model_name in model_names["14"] %}
+                    <option value="{{ model_name }}" class="model-14">{{ model_name }}</option>
+                    {% endfor %}
+                    {% for model_name in model_names["53"] %}
+                    <option value="{{ model_name }}" class="model-53" style="display: none;">{{ model_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="imageUpload">Upload Image:</label>
+            <input type="file" id="imageUpload" name="image" accept="image/*" required>
+            <div class="preview-container">
+                <img id="imagePreview" src="#" alt="Image Preview">
+            </div>
+        </div>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    <div id="result"></div>
+</div>
+<script>
+
+    // show model depending on the selected label
+    document.querySelectorAll('input[name="classes"]').forEach((input) => {
+        input.addEventListener('change', function () {
+            const modelSelect = document.getElementById('modelSelect');
+            const selectedLabel = this.value;
+
+            // Clear previous options
+            modelSelect.innerHTML = '';
+
+            // Update model options based on selected label
+            if (selectedLabel === '14') {
+                // Show 14 labels models
+                {{ model_names["14"]|tojson|safe }}
+                modelSelect.innerHTML = `
+                    {% for model_name in model_names["14"] %}
+                    <option value="{{ model_name }}" class="model-14">{{ model_name }}</option>
+                    {% endfor %}
+                `;
+            } else {
+                // Show 53 labels models
+                modelSelect.innerHTML = `
+                    {% for model_name in model_names["53"] %}
+                    <option value="{{ model_name }}" class="model-53">{{ model_name }}</option>
+                    {% endfor %}
+                `;
+            }
+        });
+    });
+
+    // Image preview functionality
+    document.getElementById('imageUpload').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            const imagePreview = document.getElementById('imagePreview');
+
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+            };
+
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Form submission
+    document.getElementById('predictionForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const resultDiv = document.getElementById('result');
+        const modelName = document.getElementById('modelSelect').value;
+
+        // Display loading message
+        resultDiv.innerHTML = '<div class="loading">Processing your image...</div>';
+        resultDiv.className = '';
+        resultDiv.style.display = 'block';
+
+        fetch('/predict', {
+            method: 'POST',
+            body: formData
+        })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        resultDiv.innerHTML = `<div class="error-message">Error: ${data.error}</div>`;
+                        resultDiv.className = 'error';
+                    } else {
+                        // Format prediction result
+                        resultDiv.innerHTML = `
+                                <div class="prediction-result">
+                                    <h3>Prediction Result</h3>
+                                    <p class="card-label">Predicted Card: <strong>${data.predicted_label}</strong></p>
+                                    <p class="model-used">Model Used: ${modelName}</p>
+                                </div>
+                            `;
+                        resultDiv.className = 'success';
+                    }
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
+                    resultDiv.className = 'error';
+                });
+    });
+</script>
+</body>
+</html>
