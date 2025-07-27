@@ -9,14 +9,20 @@ Models are trained in notebook files, and the trained model is saved in the `mod
 ### Prerequisites
 - Conda (Anaconda or Miniconda)
 - Python 3.9
-- Downloaded dataset from Kaggle
-
+- NVIDIA GPU (optional, for faster training and inference)
+- CUDA toolkit and cuDNN (if using GPU)
 
 ### Downloading the Dataset
 
-The dataset was downloaded from Kaggle:
+> [!NOTE]
+> This step is necessary only if you want to train the model yourself.
+> If you want to use the pre-trained model, you can skip this step and directly run the application.
 
-[Cards Image Dataset-Classification](https://www.kaggle.com/datasets/gpiosenka/cards-image-datasetclassification/data).
+To download the dataset, follow these steps:
+1. Go to the Kaggle dataset page [Cards Image Dataset-Classification](https://www.kaggle.com/datasets/gpiosenka/cards-image-datasetclassification/data).
+2. Click on the "Download" button to download the dataset as a ZIP file.
+3. Extract the ZIP file to a directory of your choice.
+4. Place the extracted dataset in the `data` directory of this project.
 
 
 ### Creating a Python Environment for TensorFlow GPU
