@@ -12,6 +12,13 @@ Models are trained in notebook files, and the trained model is saved in the `mod
 - NVIDIA GPU (optional, for faster training and inference)
 - CUDA toolkit and cuDNN (if using GPU)
 
+### Cloning the Repository
+
+Clone the repository and navigate to the project directory:
+```bash
+    git clone https://github.com/pirrozani/Card-Prediction-Application.git && cd Card-Prediction-Application
+```
+
 ### Downloading the Dataset
 
 > [!NOTE]
@@ -25,7 +32,7 @@ To download the dataset, follow these steps:
 4. Place the extracted dataset in the `data` directory of this project.
 
 
-### Creating a Python Environment for TensorFlow GPU
+### Creating a Python Environment for TensorFlow GPU using Conda
 
 Follow these steps to set up a Python environment with GPU support for TensorFlow:
 
@@ -46,7 +53,7 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-## Running the Application
+### Running the Application
 
 After setting up the environment, you can run the application by:
 
@@ -58,9 +65,43 @@ conda activate tf_gpu
 python main.py
 ```
 
-The web server will start, and you can access the application through your browser:
+### Using Docker
+You can run the application in a Docker container instead of using conda. This is particularly useful if you want to avoid dependency issues or if you prefer a containerized environment.
 
+#### Prerequisites for Docker
+- Ensure Docker and Docker Compose are installed on your machine.
+- If you want to use GPU acceleration, ensure that the NVIDIA Container Toolkit is installed.
 
-http://localhost:5000
+#### Running with Docker
+> [!IMPORTANT]
+> Make sure you are in the project directory where the `docker-compose.yml` file is located.
 
+Build the Docker image and run the services using Docker Compose command.
+```bash
+  docker-compose up --build
+```
+If you want to run the application in detached mode, you can use:
+```bash
+  docker-compose up -d
+```
 
+To check if the services are running, you can use:
+```bash
+  docker ps
+```
+
+> [!NOTE]
+> - The Docker setup automatically mounts the `models` and `uploads` directories for persistence
+> - GPU acceleration is enabled by default if NVIDIA Container Toolkit is available
+> - The container uses CUDA 11.8 with cuDNN 8 for optimal TensorFlow GPU performance
+
+#### Stop the Application
+You can stop the services using:
+```bash
+  docker-compose down
+```
+### Access the Application
+Once the server is running, you can access it through your web browser no matter if you used conda or Docker installation.
+Open your web browser and navigate to:
+
+**http://localhost:5000**
