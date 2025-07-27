@@ -17,5 +17,6 @@ data/
 # Uploads directories
 /uploads/
 
-# h5 models
+# Ignore all h5 files except for a specific model `custom_model_v1.h5`
 *.h5
+!custom_model_v1.h5
