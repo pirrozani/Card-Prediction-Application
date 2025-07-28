@@ -17,10 +17,10 @@ RUN apt-get update && \
 # Set the working directory
 WORKDIR /app
 
-# Copy the requirements file first for better caching
+# Copy the requirements file
 COPY requirements.txt /app/requirements.txt
 
-# Set up Python environment and install requirements
+# Create a virtual environment and install Python dependencies
 RUN python3 -m venv /opt/venv && \
     . /opt/venv/bin/activate && \
     pip install --upgrade pip && \
@@ -30,7 +30,7 @@ RUN python3 -m venv /opt/venv && \
 # Copy the application code
 COPY . /app
 
-# Set environment variables to suppress warnings and optimize GPU usage
+# Set environment variables
 ENV PATH="/opt/venv/bin:$PATH" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
