@@ -3,9 +3,6 @@ FROM nvidia/cuda:11.2.2-cudnn8-runtime-ubuntu20.04
 # Install dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    build-essential \
-    git \
-    wget \
     python3-pip \
     python3-dev \
     python3-venv \
@@ -33,13 +30,14 @@ RUN python3 -m venv /opt/venv && \
 # Copy the application code
 COPY . /app
 
-# Set environment variables
+# Set environment variables to suppress warnings and optimize GPU usage
 ENV PATH="/opt/venv/bin:$PATH" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     NVIDIA_VISIBLE_DEVICES=all \
     NVIDIA_DRIVER_CAPABILITIES=compute,utility \
-    LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+    TF_CPP_MIN_LOG_LEVEL=2 \
+    TF_ENABLE_ONEDNN_OPTS=0
 
 # Expose the port the app runs on
 EXPOSE 5000
