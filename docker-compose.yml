@@ -3,7 +3,6 @@ services:
     container_name: card-prediction-app
     image: card-prediction:latest
     build: .
-    runtime: nvidia
     ports:
       - "5000:5000"
     volumes:
@@ -11,14 +10,5 @@ services:
       - ./uploads:/app/uploads
     restart: unless-stopped
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - TF_CPP_MIN_LOG_LEVEL=2
       - TF_ENABLE_ONEDNN_OPTS=0
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [ gpu ]

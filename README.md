@@ -16,7 +16,7 @@ Models are trained in notebook files, and the trained model is saved in the `mod
 
 Clone the repository and navigate to the project directory:
 ```bash
-    git clone https://github.com/pirrozani/Card-Prediction-Application.git && cd Card-Prediction-Application
+  git clone https://github.com/pirrozani/Card-Prediction-Application.git && cd Card-Prediction-Application
 ```
 
 ### Downloading the Dataset
@@ -70,19 +70,27 @@ You can run the application in a Docker container instead of using conda. This i
 
 #### Prerequisites for Docker
 - Ensure Docker and Docker Compose are installed on your machine.
-- If you want to use GPU acceleration, ensure that the NVIDIA Container Toolkit is installed.
 
 #### Running with Docker
 > [!IMPORTANT]
 > Make sure you are in the project directory where the `docker-compose.yml` file is located.
 
 Build the Docker image and run the services using Docker Compose command.
+
+##### GPU Support
+For GPU acceleration, you can use the following command to build and run the application:
 ```bash
-  docker-compose up --build
+  docker-compose -f docker-compose.yml -f docker-compose.gpu.yml up --build
 ```
-If you want to run the application in detached mode, you can use:
+##### CPU Only
+If you do not have a GPU or prefer to run the application without GPU support, you can use the following command:
 ```bash
-  docker-compose up -d
+  docker-compose -f docker-compose.yml up --build
+```
+In order to check if GPU acceleration is available, you can run:
+```bash
+  docker-compose exec card-prediction nvidia-smi
+  # It will display the GPU information if available
 ```
 
 To check if the services are running, you can use:
